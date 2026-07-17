@@ -1,0 +1,19 @@
+[project]
+name = "encounter-transform-service"
+version = "0.1.0"
+description = "Encounter -> Claim -> CMS-1500 transformation service"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "pydantic",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "httpx",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

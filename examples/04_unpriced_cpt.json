@@ -1,0 +1,38 @@
+{
+  "encounter_id": "enc-1004",
+  "patient": {
+    "first_name": "Sam",
+    "last_name": "Okafor",
+    "dob": "1990-09-18",
+    "sex": "M"
+  },
+  "coverage": {
+    "payer_name": "UnitedHealthcare Choice Plus",
+    "member_id": "UHC00981175"
+  },
+  "rendering_provider": {
+    "npi": "1843012398",
+    "first_name": "Alan",
+    "last_name": "Ortiz"
+  },
+  "billing_entity": {
+    "npi": "1526740380",
+    "name": "Cedar Grove Family Medicine PLLC",
+    "tax_id": "84-3120987"
+  },
+  "date_of_service": "2026-07-11",
+  "place_of_service": "11",
+  "diagnoses": ["M54.50"],
+  "procedures": [
+    {
+      "cpt": "99213",
+      "units": 1,
+      "diagnosis_refs": [0]
+    },
+    {
+      "cpt": "97110",
+      "units": 2,
+      "diagnosis_refs": [0]
+    }
+  ]
+}

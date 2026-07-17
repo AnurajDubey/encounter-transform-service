@@ -1,0 +1,33 @@
+{
+  "encounter_id": "enc-1005",
+  "patient": {
+    "first_name": "June",
+    "last_name": "Park",
+    "dob": "1979-06-25",
+    "sex": "F"
+  },
+  "coverage": {
+    "payer_name": "Cigna Open Access",
+    "member_id": "CIG55510992"
+  },
+  "rendering_provider": {
+    "npi": "1234567890",
+    "first_name": "Rae",
+    "last_name": "Calloway"
+  },
+  "billing_entity": {
+    "npi": "1526740380",
+    "name": "Cedar Grove Family Medicine PLLC",
+    "tax_id": "84-3120987"
+  },
+  "date_of_service": "2026-07-12",
+  "place_of_service": "11",
+  "diagnoses": ["J06.9"],
+  "procedures": [
+    {
+      "cpt": "99213",
+      "units": 1,
+      "diagnosis_refs": [0]
+    }
+  ]
+}

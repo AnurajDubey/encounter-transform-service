@@ -1,0 +1,32 @@
+{
+  "encounter_id": "enc-1001",
+  "patient": {
+    "first_name": "Priya",
+    "last_name": "Raman",
+    "dob": "1988-04-12",
+    "sex": "F"
+  },
+  "coverage": {
+    "payer_name": "Aetna PPO",
+    "member_id": "AET123456789"
+  },
+  "rendering_provider": {
+    "npi": "1902841562",
+    "first_name": "Dana",
+    "last_name": "Whitfield"
+  },
+  "billing_entity": {
+    "npi": "1526740380",
+    "name": "Cedar Grove Family Medicine PLLC",
+    "tax_id": "84-3120987"
+  },
+  "date_of_service": "2026-07-08",
+  "place_of_service": "11",
+  "diagnoses": ["J06.9"],
+  "procedures": [
+    {
+      "cpt": "99213",
+      "units": 1
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Encounter → Claim → CMS-1500</title>
+<style>
+  :root { --line: #cbd0d6; --ink: #1c2024; --muted: #6b7280; --shade: #f4f5f7; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    color: var(--ink); margin: 0; padding: 1.5rem; line-height: 1.4;
+    max-width: 1100px; margin-inline: auto;
+  }
+  h1 { font-size: 1.15rem; margin: 0 0 1rem; }
+  h2 { font-size: 0.9rem; margin: 0 0 0.5rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+  h3 { font-size: 0.8rem; margin: 0.75rem 0 0.25rem; color: var(--muted); }
+  .controls { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem; }
+  .controls a { margin-left: auto; font-size: 0.85rem; }
+  select, button, textarea { font: inherit; }
+  select, button { padding: 0.35rem 0.6rem; border: 1px solid var(--line); border-radius: 5px; background: #fff; }
+  button { cursor: pointer; }
+  textarea {
+    width: 100%; height: 13rem; padding: 0.6rem; border: 1px solid var(--line); border-radius: 5px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px;
+  }
+  .split { display: flex; gap: 1.25rem; align-items: flex-start; flex-wrap: wrap; margin-top: 1.25rem; }
+  .split > section { flex: 1; min-width: 20rem; }
+  .forms { display: flex; gap: 1rem; align-items: flex-start; flex-wrap: wrap; }
+  .forms fieldset {
+    border: 1px solid var(--line); border-radius: 6px; margin: 0; padding: 0.4rem 0.8rem 0.8rem;
+    flex: 1; min-width: 20rem;
+  }
+  .forms legend { font-weight: 600; padding: 0 0.4rem; }
+  table { border-collapse: collapse; width: 100%; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+  th, td { border: 1px solid var(--line); padding: 0.2rem 0.45rem; text-align: left; vertical-align: top; }
+  th { background: var(--shade); font-weight: 600; }
+  pre {
+    white-space: pre-wrap; word-break: break-word; margin: 0; padding: 0.6rem;
+    background: var(--shade); border: 1px solid var(--line); border-radius: 6px;
+    font-size: 12px; max-height: 32rem; overflow: auto;
+  }
+  #diagnostics { list-style: none; margin: 0; padding: 0; font-size: 0.85rem; }
+  #diagnostics li { padding: 0.35rem 0.6rem; border-left: 3px solid var(--muted); background: var(--shade); margin-bottom: 0.35rem; border-radius: 0 4px 4px 0; }
+  #diagnostics li.error { border-color: #b00020; color: #b00020; }
+  #diagnostics li.warning { border-color: #b8860b; color: #7a5c00; }
+  #diagnostics li.info { border-color: #0369a1; color: #075985; }
+</style>
+</head>
+<body>
+  <h1>Encounter → Claim → CMS-1500</h1>
+  <div class="controls">
+    <select id="example"></select>
+    <button id="submit">Transform</button>
+    <a href="/docs">API docs →</a>
+  </div>
+  <textarea id="payload" spellcheck="false"></textarea>
+
+  <section>
+    <h2>CMS-1500</h2>
+    <div id="cms1500" class="forms"></div>
+  </section>
+  <div class="split">
+    <section><h2>Claim</h2><pre id="claim"></pre></section>
+    <section><h2>Diagnostics</h2><ul id="diagnostics"></ul></section>
+  </div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const fmt = (v) => Array.isArray(v) ? v.join(" ") : (v == null ? "" : String(v));
+
+// Examples come from the OpenAPI schema (same files that back /docs and pytest).
+let examples = {};
+async function init() {
+  const spec = await (await fetch("/openapi.json")).json();
+  examples = spec.paths["/v1/encounters/transform"].post
+    .requestBody.content["application/json"].examples ?? {};
+  for (const [name, example] of Object.entries(examples)) {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = example.summary ?? name;
+    $("example").appendChild(option);
+  }
+  $("example").onchange = () => {
+    $("payload").value = JSON.stringify(examples[$("example").value].value, null, 2);
+  };
+  if ($("example").options.length) $("example").onchange();
+}
+
+function table(headers, rows) {
+  const t = document.createElement("table");
+  const head = t.insertRow();
+  headers.forEach((h) => { const th = document.createElement("th"); th.textContent = h; head.appendChild(th); });
+  rows.forEach((cells) => {
+    const row = t.insertRow();
+    cells.forEach((c) => { row.insertCell().textContent = fmt(c); });
+  });
+  return t;
+}
+
+// Rendered generically: loop over whatever fields the form has, so adding a
+// field to the model never breaks this page.
+function renderForm(form) {
+  const box = document.createElement("fieldset");
+  const legend = document.createElement("legend");
+  legend.textContent = `Form ${form.form_index} of ${form.form_count}`;
+  box.appendChild(legend);
+  const scalars = Object.entries(form).filter(([, v]) => v === null || typeof v !== "object");
+  box.appendChild(table(["field", "value"], scalars));
+  for (const [key, value] of Object.entries(form)) {
+    if (!Array.isArray(value) || !value.length || typeof value[0] !== "object") continue;
+    const caption = document.createElement("h3");
+    caption.textContent = key;
+    box.appendChild(caption);
+    box.appendChild(table(Object.keys(value[0]), value.map(Object.values)));
+  }
+  return box;
+}
+
+function diagnosticItem(text, severity) {
+  const li = document.createElement("li");
+  li.className = severity ?? "";
+  li.textContent = text;
+  return li;
+}
+
+async function submit() {
+  $("claim").textContent = "";
+  $("cms1500").replaceChildren();
+  $("diagnostics").replaceChildren();
+  try {
+    const response = await fetch("/v1/encounters/transform", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: $("payload").value,
+    });
+    const body = await response.json();
+    if (!response.ok) {
+      $("diagnostics").appendChild(
+        diagnosticItem(`HTTP ${response.status}: ${JSON.stringify(body.detail)}`, "error"));
+      return;
+    }
+    $("claim").textContent = JSON.stringify(body.claim, null, 2);
+    body.cms1500.forEach((form) => $("cms1500").appendChild(renderForm(form)));
+    body.diagnostics.forEach((d) => $("diagnostics").appendChild(diagnosticItem(
+      `[${d.severity.toUpperCase()}] ${d.code} — ${d.message}` + (d.path ? ` (${d.path})` : ""),
+      d.severity)));
+    if (!body.diagnostics.length) $("diagnostics").appendChild(diagnosticItem("none"));
+  } catch (err) {
+    $("diagnostics").appendChild(diagnosticItem(String(err), "error"));
+  }
+}
+
+$("submit").onclick = submit;
+init();
+</script>
+</body>
+</html>

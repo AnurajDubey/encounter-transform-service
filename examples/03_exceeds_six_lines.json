@@ -1,0 +1,69 @@
+{
+  "encounter_id": "enc-1003",
+  "patient": {
+    "first_name": "Elena",
+    "last_name": "Vasquez",
+    "dob": "1962-02-27",
+    "sex": "F"
+  },
+  "coverage": {
+    "payer_name": "Medicare Part B",
+    "member_id": "1EG4TE5MK73"
+  },
+  "rendering_provider": {
+    "npi": "1902841562",
+    "first_name": "Dana",
+    "last_name": "Whitfield"
+  },
+  "billing_entity": {
+    "npi": "1526740380",
+    "name": "Cedar Grove Family Medicine PLLC",
+    "tax_id": "84-3120987"
+  },
+  "date_of_service": "2026-07-10",
+  "place_of_service": "11",
+  "diagnoses": ["E11.9", "I10", "E78.5", "Z23", "F17.210"],
+  "procedures": [
+    {
+      "cpt": "99214",
+      "units": 1,
+      "modifiers": ["25"],
+      "diagnosis_refs": [0, 1, 4]
+    },
+    {
+      "cpt": "36415",
+      "units": 1,
+      "diagnosis_refs": [0, 2]
+    },
+    {
+      "cpt": "80053",
+      "units": 1,
+      "diagnosis_refs": [0, 1]
+    },
+    {
+      "cpt": "85025",
+      "units": 1,
+      "diagnosis_refs": [0]
+    },
+    {
+      "cpt": "93000",
+      "units": 1,
+      "diagnosis_refs": [1]
+    },
+    {
+      "cpt": "90471",
+      "units": 1,
+      "diagnosis_refs": [3]
+    },
+    {
+      "cpt": "90686",
+      "units": 1,
+      "diagnosis_refs": [3]
+    },
+    {
+      "cpt": "99406",
+      "units": 1,
+      "diagnosis_refs": [4]
+    }
+  ]
+}
