@@ -8,9 +8,16 @@ A small, stateless FastAPI service. POST an Encounter-like payload; get back:
 
 ## Run
 
+From the repo root, start the service:
+
 ```bash
-uv run uvicorn app.main:app --port 8000   # from the repo root
-uv run pytest                             # 5 tests over the same example payloads
+uv run uvicorn app.main:app --port 8000
+```
+
+Run the tests (5 tests over the same example payloads):
+
+```bash
+uv run pytest
 ```
 
 - **http://localhost:8000/docs** — Swagger UI; the request body has all five examples in a labeled dropdown.
